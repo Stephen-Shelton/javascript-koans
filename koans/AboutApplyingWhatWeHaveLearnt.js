@@ -32,7 +32,7 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(productsICanEat.length).toBe(FILL_ME_IN);
+    expect(productsICanEat.length).toBe(1);
   });
 
   it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (functional)", function () {
@@ -41,7 +41,16 @@ describe("About Applying What We Have Learnt", function() {
 
       /* solve using filter() & all() / any() */
 
-      expect(productsICanEat.length).toBe(FILL_ME_IN);
+ productsICanEat = 
+    _(products) //loads products array
+    .filter(function (x) { //filter on products array
+      return !x.containsNuts && //return containsNuts is false &&
+       !_(x.ingredients).any(function(y) { // && any ingredient == "mushrooms"
+        return y == "mushrooms" }) 
+    });
+  //I NEED TO STUDY THIS MORE
+
+      expect(productsICanEat.length).toBe(1);
   });
 
   /*********************************************************************************/
@@ -55,27 +64,31 @@ describe("About Applying What We Have Learnt", function() {
       }
     }
 
-    expect(sum).toBe(FILL_ME_IN);
+    expect(sum).toBe(233168);
   });
 
   it("should add all the natural numbers below 1000 that are multiples of 3 or 5 (functional)", function () {
 
-    var sum = FILL_ME_IN;    /* try chaining range() and reduce() */
+    var sum = 
+      _.range(1000) // first we set up the array of values 0 to 1000 by using range. (0 doesn't matter here)
+      .filter(function(x) { return (x % 3 === 0 || x % 5 ===0) }) //filter on range to return #s divisible by 3 or 5.
+      .reduce(function(sum, y) { return sum + y }); //reduce on new range to add numbers in array to each other.
+    /* try chaining range() and reduce() */
 
-    expect(233168).toBe(FILL_ME_IN);
+    expect(233168).toBe(233168);
   });
 
   /*********************************************************************************/
    it("should count the ingredient occurrence (imperative)", function () {
-    var ingredientCount = { "{ingredient name}": 0 };
+    var ingredientCount = { "{ingredient name}": 0 }; //declaring an object with property and value of 0.
 
-    for (i = 0; i < products.length; i+=1) {
-        for (j = 0; j < products[i].ingredients.length; j+=1) {
+    for (i = 0; i < products.length; i+=1) { //to count through product array length
+        for (j = 0; j < products[i].ingredients.length; j+=1) { //to count through product ingredients length
             ingredientCount[products[i].ingredients[j]] = (ingredientCount[products[i].ingredients[j]] || 0) + 1;
-        }
+        } //above line is simply a counter. it cycles through product ingredients and adds 1 to total.
     }
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   it("should count the ingredient occurrence (functional)", function () {
@@ -83,7 +96,16 @@ describe("About Applying What We Have Learnt", function() {
 
     /* chain() together map(), flatten() and reduce() */
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    var ingredients = _(products).chain() //load products array and chain together methods
+                      .map(function(x) { return x.ingredients }) //transform products into products.ingredients
+                      .flatten() //make into one array in case they're in multiple arrays
+                      .reduce(function(memo, x) { // create count variable for memo[x] and return count
+                          memo[x] = (memo[x] || 0) + 1;
+                          return memo;
+                      }, ingredientCount).value(); //convert ingredient count to value
+
+
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   /*********************************************************************************/
